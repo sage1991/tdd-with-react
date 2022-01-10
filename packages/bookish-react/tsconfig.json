@@ -16,10 +16,9 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "types": [ "cypress" ]
+    "jsx": "react-jsx"
   },
-  "exclude": [ "node_modules" ]
+  "include": [ "src" ]
 }
