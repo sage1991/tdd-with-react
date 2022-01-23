@@ -1,20 +1,25 @@
 import React, { FC } from "react"
 import { Typography } from "@mui/material"
-import { BookList } from "./components/BookList"
+import { Routes, Route, Navigate } from "react-router-dom"
+
+import { BookListContainer, BookDetailContainer } from "./container"
 
 
-export const App: FC = (props) => {
-  const books = [
-    { name: "Refactoring" },
-    { name: "Domain-driven design" }
-  ]
-
+export const App: FC = () => {
   return (
-    <div>
-      <Typography variant="h2" component="h2" data-test="heading">
+    <>
+      <Typography
+        variant="h2"
+        component="h2"
+        data-test="heading"
+      >
         Bookish
       </Typography>
-      <BookList items={books} />
-    </div>
+      <Routes>
+        <Route path="/" element={<BookListContainer />} />
+        <Route path="books/:id" element={<BookDetailContainer />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   )
 }
