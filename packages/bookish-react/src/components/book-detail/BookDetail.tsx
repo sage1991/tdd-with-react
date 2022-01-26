@@ -8,7 +8,6 @@ interface Props {
 }
 
 export const BookDetail: FC<Props> = (props) => {
-
   return (
     <div className="detail">
       <h2 className="book-title">{props.book.name}</h2>
