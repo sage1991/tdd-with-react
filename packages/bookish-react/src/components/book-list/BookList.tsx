@@ -12,6 +12,8 @@ import {
 import { Book } from "../../model"
 import { Link } from "react-router-dom"
 
+import classes from "./BookList.module.css"
+
 
 interface Props {
   items: Book[]
@@ -29,7 +31,7 @@ export const BookList: FC<Props> = (props) => {
   }
 
   const renderBookList = () => props.items.map(book => (
-    <Grid key={book.id} xs={4} sm={4} className="book-item">
+    <Grid key={book.id} item xs={4} sm={4} data-test="book-item">
       <Card>
         <CardActionArea>
           <CardContent>
@@ -37,7 +39,8 @@ export const BookList: FC<Props> = (props) => {
               gutterBottom
               variant="h5"
               component="h2"
-              className="title"
+              data-test="book-name"
+              className={classes.name}
             >
               {book.name}
             </Typography>
@@ -46,7 +49,8 @@ export const BookList: FC<Props> = (props) => {
               variant="body2"
               component="p"
               color="textSecondary"
-              className="description"
+              data-test="book-description"
+              className={classes.description}
             >
               {book.description}
             </Typography>
@@ -62,7 +66,7 @@ export const BookList: FC<Props> = (props) => {
   ))
 
   return (
-    <div data-test="book-list">
+    <div data-test="book-list" className={classes.root}>
       <Grid container spacing={3}>
         { renderBookList() }
       </Grid>

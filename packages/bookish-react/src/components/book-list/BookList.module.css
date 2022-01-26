@@ -1,0 +1,15 @@
+.root {
+  flex-grow: 1;
+}
+
+.name {
+  max-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  max-height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -43,7 +43,9 @@ describe("BookList", () => {
       }
     ]
     const { container } = renderWithRouter(<BookList items={books} loading={false} error={false} />)
-    const titles = Array.from(container.querySelectorAll(".title")).map((element) => element.innerHTML)
+    const titles = Array
+      .from(container.querySelectorAll("[data-test='book-name']"))
+      .map((element) => element.innerHTML)
     expect(titles).toEqual([ "Refactoring", "Domain-driven design" ])
   })
 })
