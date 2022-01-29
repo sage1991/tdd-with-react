@@ -1,25 +1,29 @@
-import React, { FC, useState } from "react"
-import axios from "axios"
+import React, { FC, useEffect } from "react"
 
-import { Book } from "../../model"
-import { BookList } from "../../components"
-import { useRemoteService } from "../../hooks"
-import { SearchBox } from "../../components/ui"
+import { BookList, SearchBox } from "../../components"
+import {
+  useDispatch,
+  useSelector,
+  createBookListSelector,
+  createSearchKeywordSelector,
+  fetchBooks,
+  setSearchKeyword
+} from "../../store"
 
 
-const INITIAL_BOOKS: Book[] = []
-
-const fetchBooks = (query: string) => (): Promise<Book[]> => (
-  axios
-    .get(`http://localhost:8080/books?_sort=id&_order=asc&q=${query}`)
-    .then(response => response.data)
-)
+const bookListSelector = createBookListSelector()
+const searchKeywordSelector = createSearchKeywordSelector()
 
 export const BookListContainer: FC = () => {
-  const [ keyword, setKeyword ] = useState<string>("")
-  const { data, loading, error } = useRemoteService(fetchBooks(keyword), INITIAL_BOOKS, [ keyword ])
+  const dispatch = useDispatch()
+  const keyword = useSelector(searchKeywordSelector)
+  const { books, loading, error } = useSelector(bookListSelector)
 
-  const onTextChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)
+  useEffect(() => {
+    dispatch(fetchBooks(keyword))
+  }, [ keyword, dispatch ])
+
+  const onTextChange = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(setSearchKeyword(e.target.value))
 
   return (
     <>
@@ -31,7 +35,7 @@ export const BookListContainer: FC = () => {
         margin="normal"
         variant="outlined"
       />
-      <BookList items={data} loading={loading} error={error} />
+      <BookList items={books} loading={loading} error={error} />
     </>
   )
 }
