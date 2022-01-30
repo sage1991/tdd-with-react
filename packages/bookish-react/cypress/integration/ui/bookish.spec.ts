@@ -1,42 +1,17 @@
 import axios from "axios"
 
-import { Book } from "../../../src/model"
-
-
 describe("Bookish application", () => {
-  // before(() => axios.delete("http://localhost:8080/books?_cleanup=true").catch(console.error))
-  //
-  // afterEach(() => axios.delete("http://localhost:8080/books?_cleanup=true").catch(console.error))
-  //
-  // beforeEach(() => {
-  //   const books: Book[] = [
-  //     {
-  //       id: 1,
-  //       name: "Refactoring",
-  //       description: "Martin Fowler's Refactoring defined core ideas and techniques that hundreds of thousands of developers have used to improve their software."
-  //     },
-  //     {
-  //       id: 2,
-  //       name: "Domain-driven design",
-  //       description: "Martin Fowler's Refactoring defined core ideas and techniques that hundreds of thousands of developers have used to improve their software."
-  //     },
-  //     {
-  //       id: 3,
-  //       name: "Building Microservices",
-  //       description: "Martin Fowler's Refactoring defined core ideas and techniques that hundreds of thousands of developers have used to improve their software."
-  //     }
-  //   ]
-  //
-  //   return books.map(book => (
-  //     axios.request({
-  //       url: "http://localhost:8080/books",
-  //       method: "POST",
-  //       data: book,
-  //       headers: { "Content-Type": "application/json" }
-  //     }).catch(console.error)
-  //   ))
-  // })
   const visitApp = () => cy.visit("http://localhost:3000")
+
+  afterEach(() => {
+    return (
+      axios
+        .get("http://localhost:8080/reviews")
+        .then(({ data }) => {
+          return Promise.all(data.map(review => axios.delete(`http://localhost:8080/reviews/${review.id}`)))
+        })
+    )
+  })
 
   it("should visits the bookish", () => {
     visitApp()
@@ -72,5 +47,14 @@ describe("Bookish application", () => {
     cy.get("div[data-test='search'] input").type("design")
     cy.get("div[data-test='book-item']").should("have.length", 1)
     cy.get("div[data-test='book-item']").eq(0).contains("Domain-driven design")
+  })
+
+  it("should write a review for a book", () => {
+    visitApp()
+    cy.get("div[data-test='book-item']").contains("View Details").eq(0).click()
+    cy.get("input[name='name']").type("Harry")
+    cy.get("textarea[name='content']").type("Excellent work!!")
+    cy.get("button[name='submit']").click()
+    cy.get("div[data-test='review-container'] [data-test='review']").should("have.length", 1)
   })
 })

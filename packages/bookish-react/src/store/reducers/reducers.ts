@@ -1,7 +1,7 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit"
 
 import { StoreState } from "./slices"
-import { Book } from "../../model"
+import { Book, Review } from "../../model"
 
 
 export const setSearchKeywordReducer: CaseReducer<StoreState, PayloadAction<string>> = (state, action) => {
@@ -26,4 +26,19 @@ export const fetchBookRejectedReducer: CaseReducer<StoreState> = (state) => {
 
 export const fetchBookByIdFulfilledReducer: CaseReducer<StoreState, PayloadAction<Book>> = (state, action) => {
   state.detail = action.payload
+}
+
+export const saveReviewFulfilledReducer: CaseReducer<StoreState, PayloadAction<Review>> = (state, action) => {
+  const book = state.books.find((book) => book.id === action.payload.bookId)
+  if (!book) return
+
+  if (book.reviews) {
+    book.reviews.push(action.payload)
+  } else {
+    book.reviews = [ action.payload ]
+  }
+
+  if (state.detail.id === book.id) {
+    state.detail = book
+  }
 }

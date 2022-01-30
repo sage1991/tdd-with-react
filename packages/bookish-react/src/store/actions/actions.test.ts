@@ -2,9 +2,9 @@ import configureMockStore, { MockStore } from "redux-mock-store"
 import thunk from "redux-thunk"
 import axios from "axios"
 
-import { setSearchKeyword, fetchBooks, fetchBookById } from "./actions"
+import { setSearchKeyword, fetchBooks, fetchBookById, saveReview } from "./actions"
 import { SET_SEARCH_KEYWORD } from "./type"
-import { Book } from "../../model"
+import { Book, Review } from "../../model"
 
 
 const mockStore = configureMockStore([ thunk ])
@@ -99,7 +99,26 @@ describe("Actions", () => {
 
     // @ts-ignore
     store.dispatch(fetchBookById(1)).then(() => {
-      expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books/1")
+      expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books/1?_embed=reviews")
+    })
+  })
+
+  it("should save review", () => {
+    const review: Review = {
+      id: 1,
+      name: "Harry",
+      content: "Excellent work!!",
+      date: "2022-01-31",
+      bookId: 1
+    }
+
+    axios.post = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({}))
+
+    // @ts-ignore
+    store.dispatch(saveReview(review)).then(() => {
+      expect(axios.post).toHaveBeenCalledWith("http://localhost:8080/reviews", review)
     })
   })
 })

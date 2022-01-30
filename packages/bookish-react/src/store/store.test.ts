@@ -1,8 +1,8 @@
 import axios from "axios"
 
 import { store } from "./store"
-import { Book } from "../model"
-import { fetchBookById, fetchBooks, setSearchKeyword } from "./actions"
+import { Book, Review } from "../model"
+import { fetchBookById, fetchBooks, saveReview, setSearchKeyword } from "./actions"
 
 
 describe("Store", () => {
@@ -42,7 +42,33 @@ describe("Store", () => {
 
     await store.dispatch(fetchBookById(1)).unwrap()
     const { detail } = store.getState()
-    expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books/1")
+    expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books/1?_embed=reviews")
     expect(detail).toEqual(books[0])
+  })
+
+  it("should save review", async () => {
+    axios.get = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ data: books }))
+    axios.post = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve())
+
+    const review: Review = {
+      id: 1,
+      bookId: 1,
+      name: "Harry",
+      content: "Very useful!!",
+      date: ""
+    }
+
+    await store.dispatch(fetchBooks("")).unwrap()
+    await store.dispatch(saveReview(review)).unwrap()
+    const state = store.getState()
+    const book = state.books.find(book => book.id === review.bookId)
+
+    expect(axios.post).toHaveBeenCalledWith("http://localhost:8080/reviews", review)
+    expect(book).not.toBeNull()
+    expect(book?.reviews).toContain(review)
   })
 })

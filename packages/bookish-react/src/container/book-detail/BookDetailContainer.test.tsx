@@ -22,7 +22,7 @@ describe("BookDetailContainer", () => {
 
   it("should render book detail", async () => {
     mock
-      .onGet("http://localhost:8080/books/1")
+      .onGet("http://localhost:8080/books/1?_embed=reviews")
       .reply(200, { id: 1, name: "Refactoring", description: "description" })
 
     const { findByText } = renderWithProvider(

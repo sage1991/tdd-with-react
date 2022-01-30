@@ -5,9 +5,9 @@ import {
   fetchBookFulfilledReducer,
   fetchBookPendingReducer,
   setSearchKeywordReducer,
-  fetchBookByIdFulfilledReducer
+  fetchBookByIdFulfilledReducer, saveReviewFulfilledReducer
 } from "./reducers"
-import { fetchBookById, fetchBooks, setSearchKeyword } from "../actions"
+import { fetchBookById, fetchBooks, saveReview, setSearchKeyword } from "../actions"
 import { Book } from "../../model"
 
 
@@ -42,7 +42,7 @@ const slice = createSlice({
       .addCase(fetchBooks.fulfilled, fetchBookFulfilledReducer)
       .addCase(setSearchKeyword.type, setSearchKeywordReducer)
       .addCase(fetchBookById.fulfilled, fetchBookByIdFulfilledReducer)
-
+      .addCase(saveReview.fulfilled, saveReviewFulfilledReducer)
   }
 })
 

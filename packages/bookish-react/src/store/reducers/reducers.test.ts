@@ -1,6 +1,6 @@
 import { reducer, StoreState } from "./slices"
-import { fetchBooks } from "../actions"
-import { Book } from "../../model"
+import { fetchBooks, saveReview } from "../actions"
+import { Book, Review } from "../../model"
 
 
 describe("Reducers", () => {
@@ -33,5 +33,30 @@ describe("Reducers", () => {
     expect(state.books).toBe(books)
   })
 
+  it("should add reviews to state when request successful", () => {
+    const initialState: StoreState = {
+      loading: false,
+      error: false,
+      books: [{ id: 1, name: "Refactoring", description: "description" }],
+      keyword: "",
+      detail: {
+        id: -1,
+        name: "",
+        description: ""
+      }
+    }
+    const review: Review = {
+      id: 1,
+      bookId: 1,
+      name: "Harry",
+      content: "Very Good!!",
+      date: ""
+    }
 
+    const action = { type: saveReview.fulfilled, payload: review }
+    const state = reducer(initialState, action)
+
+    expect(state.books.length).toBe(1)
+    expect(state.books[0].reviews).toContain(review)
+  })
 })
