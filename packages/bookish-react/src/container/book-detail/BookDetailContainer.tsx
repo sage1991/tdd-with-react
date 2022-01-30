@@ -1,27 +1,23 @@
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import axios from "axios"
 
+import { createBookDetailSelector, fetchBookById, useDispatch, useSelector } from "../../store"
 import { BookDetail } from "../../components"
-import { useRemoteService } from "../../hooks"
-import { Book } from "../../model"
 
 
-const INITIAL_BOOK: Book = {
-  id: -1,
-  name: "",
-  description: ""
-}
-
-const fetchBookById = (id: number) => (): Promise<Book> => (
-  axios
-    .get(`http://localhost:8080/books/${id}`)
-    .then(response => response.data)
-)
+const bookDetailSelector = createBookDetailSelector()
 
 export const BookDetailContainer: FC = () => {
   const params = useParams<{ id: string }>()
-  const { data, loading, error } = useRemoteService(fetchBookById(+`${params.id}`), INITIAL_BOOK, [params.id])
+  const dispatch = useDispatch()
 
-  return <BookDetail book={data} />
+  useEffect(() => {
+    if (params.id) {
+      dispatch(fetchBookById(parseInt(params.id)))
+    }
+  }, [ params.id ])
+
+  const { book, loading, error } = useSelector(bookDetailSelector)
+
+  return <BookDetail book={book} />
 }

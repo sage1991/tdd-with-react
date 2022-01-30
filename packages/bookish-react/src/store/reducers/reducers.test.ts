@@ -8,7 +8,12 @@ describe("Reducers", () => {
     loading: false,
     error: false,
     books: [],
-    keyword: ""
+    keyword: "",
+    detail: {
+      id: -1,
+      name: "",
+      description: ""
+    }
   }
 
   it("should show loading when request is sent", () => {

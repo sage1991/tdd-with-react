@@ -4,9 +4,10 @@ import {
   fetchBookRejectedReducer,
   fetchBookFulfilledReducer,
   fetchBookPendingReducer,
-  setSearchKeywordReducer
+  setSearchKeywordReducer,
+  fetchBookByIdFulfilledReducer
 } from "./reducers"
-import { fetchBooks, setSearchKeyword } from "../actions"
+import { fetchBookById, fetchBooks, setSearchKeyword } from "../actions"
 import { Book } from "../../model"
 
 
@@ -15,13 +16,19 @@ export interface StoreState {
   error: boolean
   books: Book[]
   keyword: string
+  detail: Book
 }
 
 const initialState: StoreState = {
   loading: false,
   error: false,
   books: [],
-  keyword: ""
+  keyword: "",
+  detail: {
+    id: -1,
+    name: "",
+    description: ""
+  }
 }
 
 const slice = createSlice({
@@ -34,6 +41,8 @@ const slice = createSlice({
       .addCase(fetchBooks.rejected, fetchBookRejectedReducer)
       .addCase(fetchBooks.fulfilled, fetchBookFulfilledReducer)
       .addCase(setSearchKeyword.type, setSearchKeywordReducer)
+      .addCase(fetchBookById.fulfilled, fetchBookByIdFulfilledReducer)
+
   }
 })
 

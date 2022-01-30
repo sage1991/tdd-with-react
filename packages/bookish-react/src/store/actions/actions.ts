@@ -1,14 +1,20 @@
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
 
-import { FETCH_BOOKS, SET_SEARCH_KEYWORD } from "./type"
+import { FETCH_BOOK_BY_ID, FETCH_BOOKS, SET_SEARCH_KEYWORD } from "./type"
 import { Book } from "../../model"
 
 
 export const setSearchKeyword = createAction<string>(SET_SEARCH_KEYWORD)
 
-export const fetchBooks = createAsyncThunk<Book[], string>(FETCH_BOOKS, (query: string) => {
+export const fetchBooks = createAsyncThunk<Book[], string>(FETCH_BOOKS, (query) => {
   return axios
     .get(`http://localhost:8080/books?_sort=id&_order=asc&q=${query}`)
+    .then(response => response.data)
+})
+
+export const fetchBookById = createAsyncThunk<Book, number>(FETCH_BOOK_BY_ID, (id) => {
+  return axios
+    .get(`http://localhost:8080/books/${id}`)
     .then(response => response.data)
 })

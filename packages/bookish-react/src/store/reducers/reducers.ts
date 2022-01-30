@@ -23,3 +23,7 @@ export const fetchBookRejectedReducer: CaseReducer<StoreState> = (state) => {
   state.error = true
   state.loading = false
 }
+
+export const fetchBookByIdFulfilledReducer: CaseReducer<StoreState, PayloadAction<Book>> = (state, action) => {
+  state.detail = action.payload
+}

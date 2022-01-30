@@ -1,15 +1,30 @@
-import configureMockStore from "redux-mock-store"
+import configureMockStore, { MockStore } from "redux-mock-store"
 import thunk from "redux-thunk"
 import axios from "axios"
 
-import { setSearchKeyword, fetchBooks } from "./actions"
+import { setSearchKeyword, fetchBooks, fetchBookById } from "./actions"
 import { SET_SEARCH_KEYWORD } from "./type"
 import { Book } from "../../model"
 
 
 const mockStore = configureMockStore([ thunk ])
 
-describe("BookListContainer related actions", () => {
+describe("Actions", () => {
+  let store: MockStore
+  beforeEach(() => {
+    store = mockStore({
+      books: [],
+      loading: false,
+      error: false,
+      keyword: "",
+      detail: {
+        id: -1,
+        name: "",
+        description: ""
+      }
+    })
+  })
+
   it("should set the search keyword", () => {
     const keyword = ""
     const expected = {
@@ -31,12 +46,11 @@ describe("BookListContainer related actions", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ data: books }))
 
-    const expectedActions = [
-      { type: fetchBooks.pending },
-      { type: fetchBooks.fulfilled, payload: books }
-    ]
+    const expectedActions = expect.arrayContaining([
+      expect.objectContaining({ type: fetchBooks.pending.type }),
+      expect.objectContaining({ type: fetchBooks.fulfilled.type, payload: books })
+    ])
 
-    const store = mockStore({ books: [] })
     // @ts-ignore
     store.dispatch(fetchBooks("")).then(() => {
       const actions = store.getActions()
@@ -49,12 +63,11 @@ describe("BookListContainer related actions", () => {
       .fn()
       .mockImplementation(() => Promise.reject({ message: "Something went wrong" }))
 
-    const expectedActions = [
-      { type: fetchBooks.pending },
-      { type: fetchBooks.rejected }
-    ]
+    const expectedActions = expect.arrayContaining([
+      expect.objectContaining({ type: fetchBooks.pending.type }),
+      expect.objectContaining({ type: fetchBooks.rejected.type })
+    ])
 
-    const store = mockStore({ books: [] })
     // @ts-ignore
     store.dispatch(fetchBooks("")).then(() => {
       const actions = store.getActions()
@@ -72,10 +85,21 @@ describe("BookListContainer related actions", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ data: books }))
 
-    const store = mockStore({ books: [] })
     // @ts-ignore
     store.dispatch(fetchBooks("domain")).then(() => {
       expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books?_sort=id&_order=asc&q=domain")
+    })
+  })
+
+  it("should fetch book by id", () => {
+    const book: Book = { id: 1, name: "Refactoring", description: "description" }
+    axios.get = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(book))
+
+    // @ts-ignore
+    store.dispatch(fetchBookById(1)).then(() => {
+      expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books/1")
     })
   })
 })

@@ -14,3 +14,10 @@ export const createSearchKeywordSelector = () => createSelector(
   (state: StoreState) => state.keyword,
   (keyword) => keyword
 )
+
+export const createBookDetailSelector = () => createSelector(
+  (state: StoreState) => state.detail,
+  (state: StoreState) => state.loading,
+  (state: StoreState) => state.error,
+  (book, loading, error) => ({ book, loading, error })
+)

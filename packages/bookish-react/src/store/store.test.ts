@@ -2,7 +2,7 @@ import axios from "axios"
 
 import { store } from "./store"
 import { Book } from "../model"
-import { fetchBooks, setSearchKeyword } from "./actions"
+import { fetchBookById, fetchBooks, setSearchKeyword } from "./actions"
 
 
 describe("Store", () => {
@@ -35,5 +35,14 @@ describe("Store", () => {
     expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books?_sort=id&_order=asc&q=domain")
   })
 
+  it("should fetch book from remote", async () => {
+    axios.get = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ data: books[0] }))
 
+    await store.dispatch(fetchBookById(1)).unwrap()
+    const { detail } = store.getState()
+    expect(axios.get).toHaveBeenCalledWith("http://localhost:8080/books/1")
+    expect(detail).toEqual(books[0])
+  })
 })

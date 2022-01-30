@@ -1,6 +1,6 @@
 import React from "react"
 import { render } from "@testing-library/react"
-import { BrowserRouter } from "react-router-dom"
+import { MemoryRouter } from "react-router-dom"
 import MockAdapter from "axios-mock-adapter"
 import { Provider } from "react-redux"
 import axios from "axios"
@@ -13,9 +13,9 @@ import { Book } from "../../model"
 describe("BookListContainer", () => {
   const renderWithProvider = (component: React.ReactNode) => render(
     <Provider store={store}>
-      <BrowserRouter>
+      <MemoryRouter>
         { component }
-      </BrowserRouter>
+      </MemoryRouter>
     </Provider>
   )
 
